@@ -36,6 +36,3 @@ btn.addEventListener("click", (evt) => {
     let amtval = amount.value;
     console.log(amtval);
 });
-
-
-
