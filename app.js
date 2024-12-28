@@ -1,38 +1,150 @@
-const BASE_URL = "https://latest.currency-api.pages.dev/v1/currencies/eur.json"
+document.addEventListener("DOMContentLoaded", () => {
+  const BASE_URL = "https://api.exchangerate-api.com/v4/latest/";
 
-const dropdowns = document.querySelectorAll(".dropdown select");
-const btn = document.querySelector("from button");
- 
-let i
-for(let select of dropdowns) {
-    for (currCode in countryList) {
-        let newOption = document.createElement("option");
-        newOption.innerText = currCode;
-        newOption.value = currCode;
-        if(select.name === "from" && currCode === "USD") {
-            newOption.selected = "selected";
-        } else if(select.name === "to" && currCode === "INR") {
-            newOption.selected = "selected";
-            }
-        select.append(newOption);
-    }
+  const dropdowns = document.querySelectorAll(".dropdown select");
+  const btn = document.querySelector("form button");
+  const fromCurr = document.querySelector(".from select");
+  const toCurr = document.querySelector(".to select");
+  const msg = document.querySelector(".msg");
 
-    select.addEventListener("change", (evt) => {
-        updateFlag(evt.target);
-    });
-}
+  // Populate dropdowns with currency codes
+  for (let select of dropdowns) {
+      for (let currCode in countryList) {
+          let newOption = document.createElement("option");
+          newOption.innerText = currCode;
+          newOption.value = currCode;
 
-const updateFlag = (element) => {
-    let currCode = element.value;
-    let countryCode = countryList[currCode];
-    let newSrc = `https://flagsapi.com/${countryCode}/flat/64.png`;
-    let img = element.parentElement.querySelector("img");
-    img.src = newSrc;
-};
+          if (select.name === "from" && currCode === "USD") {
+              newOption.selected = "selected";
+          } else if (select.name === "to" && currCode === "INR") {
+              newOption.selected = "selected";
+          }
 
-btn.addEventListener("click", (evt) => {
-    evt.preventDefault();
-    let amount = document.querySelector(".amount input");
-    let amtval = amount.value;
-    console.log(amtval);
+          select.append(newOption);
+      }
+
+      select.addEventListener("change", (evt) => {
+          updateFlag(evt.target);
+      });
+  }
+
+  // Update flag image based on selected currency
+  const updateFlag = (element) => {
+      let currCode = element.value;
+      let countryCode = countryList[currCode];
+      let newSrc = `https://flagsapi.com/${countryCode}/flat/64.png`;
+      let img = element.parentElement.querySelector("img");
+      img.src = newSrc;
+  };
+
+  // Fetch exchange rate
+  const updateExchangeRate = async () => {
+      let amount = document.querySelector(".amount input");
+      let amtVal = parseFloat(amount.value) || 1;
+
+      if (amtVal <= 0) {
+          amtVal = 1;
+          amount.value = "1";
+      }
+
+      if (!fromCurr.value || !toCurr.value) {
+          msg.innerText = "Please select valid currencies.";
+          return;
+      }
+
+      try {
+          const URL = `${BASE_URL}${fromCurr.value}`;
+          let response = await fetch(URL);
+
+          if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          let data = await response.json();
+          let rate = data.rates[toCurr.value];
+
+          if (!rate) {
+              msg.innerText = "Exchange rate not available.";
+              return;
+          }
+
+          let finalAmount = (amtVal * rate).toFixed(2);
+          msg.innerText = `${amtVal} ${fromCurr.value} = ${finalAmount} ${toCurr.value}`;
+      } catch (error) {
+          msg.innerText = "Failed to fetch exchange rate. Try again later.";
+          console.error("Exchange rate error:", error);
+      }
+  };
+
+  btn.addEventListener("click", (evt) => {
+      evt.preventDefault();
+      updateExchangeRate();
+  });
+
+  window.addEventListener("load", () => {
+      updateExchangeRate();
+  });
 });
+
+
+
+// const BASE_URL = "https://latest.currency-api.pages.dev/v1/currencies"
+
+// const dropdowns = document.querySelectorAll(".dropdown select");
+// const btn = document.querySelector("form button");
+// const fromCurr = document.querySelector(".from select");
+// const toCurr = document.querySelector(".to select");
+// const msg = document.querySelector(".msg");
+
+
+
+// for(let select of dropdowns) {
+//     for (currCode in countryList) {
+//         let newOption = document.createElement("option");
+//         newOption.innerText = currCode;
+//         newOption.value = currCode;
+//         if(select.name === "from" && currCode === "USD") {
+//             newOption.selected = "selected";
+//         } else if(select.name === "to" && currCode === "INR") {
+//             newOption.selected = "selected";
+//         }
+//         select.append(newOption);
+//     }
+
+//     select.addEventListener("change", (evt) => {
+//         updateFlag(evt.target);
+//     });
+// }
+
+// const updateFlag = (element) => {
+//     let currCode = element.value;
+//     let countryCode = countryList[currCode];
+//     let newSrc = `https://flagsapi.com/${countryCode}/flat/64.png`;
+//     let img = element.parentElement.querySelector("img");
+//     img.src = newSrc;
+// };
+
+// btn.addEventListener("click", async(evt) => {
+//     evt.preventDefault();
+//     updateExchangeRate();
+// });
+
+// const updateExchangeRate = async () => {
+//      let amount = document.querySelector(".amount input");
+//      let amtVal = amount.value;
+//      if (amtVal === "" || amtVal < 1) {
+//       amtVal = 1;
+//       amount.value ="1";
+//      }  
+//        const URL = `${BASE_URL}/${fromCurr.value.toLowerCase()}/${toCurr.value.toUpperCase()}.json`;
+//         let response = await fetch(URL);
+//         let data =  await response.json();
+//         let rate = data[toCurr.value.toLowerCase()];
+        
+//         let finalAmount = amtVal * rate;
+//         msg.innerText = `${amtVal} ${fromCurr.value} = ${finalAmount} ${toCurr.value}`;
+// };
+
+// window.addEventListener("load", () => {
+//   updateExchangeRate();
+// });

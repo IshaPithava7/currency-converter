@@ -1,4 +1,85 @@
-*{
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f2f5;
+}
+
+.container {
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.amount input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    font-size: 1rem;
+}
+
+.dropdown {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.select-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+select {
+    padding: 5px;
+    font-size: 1rem;
+}
+
+img {
+    width: 40px;
+    height: 30px;
+    border-radius: 5px;
+}
+
+.msg {
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+
+button {
+    padding: 10px;
+    font-size: 1rem;
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #45a049;
+}
+
+
+
+
+/* *{
     margin: 0;
     padding: 0;
 }
@@ -79,4 +160,4 @@ form button{
     color: #fff;
     font-size: 1.15rem;
     cursor: pointer;
-}
+} */
